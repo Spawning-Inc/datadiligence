@@ -59,12 +59,19 @@ This will also instantiate some default Evaluators for you to use. We can pass a
 the package directly to use one of these defaults::
 
     >>> urls = ['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com']
-    >>> approved_urls = dd.is_allowed(urls=urls)
+    >>> approved_urls = dd.filter_allowed(urls=urls)
     >>> approved_urls
     ['https://www.google.com']
 
-The response is a list of the URLs that are allowed. In this case, only Google is allowed.
-You can then continue to use this list of approved URLs throughout the ML pipeline.
+The response is a list of the URLs that are allowed. Additionally,
+you can use ``is_allowed`` to return a list of boolean responses::
+
+    >>> urls = ['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com']
+    >>> approved_urls = dd.is_allowed(urls=urls)
+    >>> approved_urls
+    [True, False, False]
+
+In both cases, only Google is allowed.
 
 If you're using `pyarrow` or `pandas`, you must first convert the urls to a python list::
 
@@ -73,14 +80,14 @@ If you're using `pyarrow` or `pandas`, you must first convert the urls to a pyth
     >>> urls = pa.array(['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com'])
     >>> approved_urls = dd.is_allowed(urls=urls.to_pylist())
     >>> approved_urls
-    ['https://www.google.com']
+    [True]
 
     >>> # pandas example
     >>> import pandas as pd
     >>> urls = pd.Series(['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com'])
     >>> approved_urls = dd.is_allowed(urls=urls.to_list())
     >>> approved_urls
-    ['https://www.google.com']
+    [True]
 
 Some rules require additional information or dependencies, such as API Keys in the case of Spawning (see below).
 If the required dependencies are not met, the related rule will NOT evaluate, and the response will be the same as if the rule was not included.
@@ -88,7 +95,7 @@ If the required dependencies are not met, the related rule will NOT evaluate, an
 For example, if the Spawning API Key is not set in your environment variables::
 
     >>> urls = ['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com']
-    >>> approved_urls = dd.is_allowed(urls=urls)
+    >>> approved_urls = dd.filter_allowed(urls=urls)
     Spawning API key not found. Please set your API key to the environment variable SPAWNING_API_KEY
     >>> approved_urls
     ['https://www.google.com', 'https://www.yahoo.com', 'https://www.bing.com']

@@ -87,4 +87,25 @@ def is_allowed(name=None, **kwargs):
             raise DefaultEvaluatorNotFound(list(kwargs.keys()))
 
 
+def filter_allowed(name=None, **kwargs):
+    """
+    Filter a list of content.
+
+    Args:
+        name (str): The name of a specific evaluator.
+        **kwargs: Arbitrary keyword arguments to read args from.
+    """
+    if name is not None:
+        if name not in bootstrap_dictionary:
+            raise EvaluatorNotRegistered(name)
+        return bootstrap_dictionary[name].filter_allowed(**kwargs)
+    else:
+        # since we are preloading evaluators manually, we can check to see which one to call
+        # based on the kwargs
+        if "urls" in kwargs:
+            return bootstrap_dictionary["preprocess"].filter_allowed(**kwargs)
+        else:
+            raise DefaultEvaluatorNotFound(list(kwargs.keys()))
+
+
 load_defaults()

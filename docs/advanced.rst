@@ -109,7 +109,7 @@ other workflows may not already have HTTP responses, thus other evaluators may c
 -----------------------
 Make your own Bulk Rule
 -----------------------
-Bulk `Rules` are handled slightly differently than normal `Rules`. They are intended to be a subclass of `datadiligence.rules.BulkRule` and implement the `get_allowed` function::
+Bulk `Rules` are handled slightly differently than normal `Rules`. They are intended to be a subclass of `datadiligence.rules.BulkRule` and implement the `filter_allowed` function::
 
     from datadiligence.rules import BulkRule
 
@@ -117,11 +117,21 @@ Bulk `Rules` are handled slightly differently than normal `Rules`. They are inte
         def is_ready(self):
             return True
 
-        def get_allowed(self, **kwargs):
+        def filter_allowed(self, **kwargs):
             return []
 
-Notice the `get_allowed` function should be called for `BulkRule` classes. This function is usually hidden behind an Evaluator,
-but it helps the developer clarify we're using a different function for bulk rules.
+Notice the ``filter_allowed`` function should be called for ``BulkRule`` classes. The `Evaluator` should also have the ``filter_allowed`` function implemented::
+
+        class MyEvaluator(Evaluator):
+            def filter_allowed(self, urls= [] **kwargs):
+                # set default to allow everything
+                allowed = [True] * len(urls)
+                for rule in self.rules:
+                    if rule.is_ready():
+                        rule_results = rule.is_allowed(urls=urls)
+
+                        # set each url as disallowed, and never re-enable it
+                        allowed = [a and b for a, b in zip(allowed, rule_results)]
 
 Notice the response type is also not a boolean, but a list. The responses should be a list of approved URLs. As a best practice,
 the rules that will catch the most URLs should be run first, and the rules that will catch the least URLs should be run last.
@@ -136,5 +146,5 @@ If you only want to check your URLs against the Spawning API, perform the follow
     >>> from datadiligence.rules import SpawningAPI
     >>> urls = ['http://example.com', 'https://example.com']
     >>> spawning_rule = SpawningAPI(user_agent="my-user-agent")
-    >>> spawning_rule.get_allowed(urls=urls)
+    >>> spawning_rule.filter_allowed(urls=urls)
     []

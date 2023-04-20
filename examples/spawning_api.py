@@ -11,4 +11,4 @@ d = md.select(["url"]).to_pandas()
 urls = d.iloc[:, 0].to_list()
 
 # send through pre-process steps (only includes Spawning API currently)
-verified_urls = dd.is_allowed("preprocess", urls=urls)
+verified_urls = dd.filter_allowed(urls=urls)

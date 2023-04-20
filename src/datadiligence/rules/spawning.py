@@ -71,13 +71,13 @@ class SpawningAPI(BulkRule):
             max_concurrent_requests = self.MAX_CONCURRENT_REQUESTS
         self.max_concurrent_requests = max_concurrent_requests
 
-    def get_allowed(self, urls=None, url=None, **kwargs):
+    def filter_allowed(self, urls=None, url=None, **kwargs):
         """Submit a list of URLs to the Spawning AI API.
         Args:
             urls (list): A list of URLs to submit.
             url (str): A single URL to submit.
         Returns:
-            list: A list containing the result dicts of the submission.
+            list: A list containing the allowed urls of the submission.
         """
         if urls is None:
             if url is not None:
@@ -97,7 +97,33 @@ class SpawningAPI(BulkRule):
 
         return results
 
-    async def get_allowed_async(self, urls=None, url=None, **kwargs):
+    def is_allowed(self, urls=None, url=None, **kwargs):
+        """Submit a list of URLs to the Spawning AI API.
+        Args:
+            urls (list): A list of URLs to submit.
+            url (str): A single URL to submit.
+        Returns:
+            list: A list containing booleans, indicating if a respective URL is allowed.
+        """
+        if urls is None:
+            if url is not None:
+                urls = [url]
+            else:
+                raise SpawningNoParam()
+
+        results = []
+
+        # thread pool executor to submit chunks in parallel
+        with ThreadPoolExecutor(max_workers=self.max_concurrent_requests) as executor:
+            futures = [executor.submit(self._submit_chunk, chunk) for chunk in self._chunk(urls)]
+            wait(futures)
+
+            for future in futures:
+                results.extend([not response_url["optOut"] for response_url in future.result()])
+
+        return results
+
+    async def filter_allowed_async(self, urls=None, url=None, **kwargs):
         """Submit a list of URLs to the Spawning AI API.
 
         Args:
@@ -105,7 +131,7 @@ class SpawningAPI(BulkRule):
             url (str): A single URL to submit.
 
         Returns:
-            list: A list containing the result dicts of the submission.
+            list: A list containing the allowed URLs.
 
         """
         if urls is None:
@@ -115,22 +141,29 @@ class SpawningAPI(BulkRule):
                 raise SpawningNoParam()
 
         results = await self._submit_chunks_async(urls)
+        results = [response_url["url"] for response_url in results if not response_url["optOut"]]
         return results
 
-    def is_allowed(self, url=None, **kwargs):
-        """
-        Check if a URL is allowed based on the Spawning AI API.
+    async def is_allowed_async(self, urls=None, url=None, **kwargs):
+        """Submit a list of URLs to the Spawning AI API.
 
         Args:
-            url (str): The URL to check.
+            urls (list): A list of URLs to submit.
+            url (str): A single URL to submit.
 
         Returns:
-            bool: True if the URL is allowed, False otherwise.
-        """
-        if url is None:
-            return True
+            list: A list of boolean values indicating if a URL is allowed to be used or not.
 
-        return len(self.get_allowed(url=url)) >= 1
+        """
+        if urls is None:
+            if url is not None:
+                urls = [url]
+            else:
+                raise SpawningNoParam()
+
+        results = await self._submit_chunks_async(urls)
+        results = [not response_url["optOut"] for response_url in results]
+        return results
 
     def is_ready(self):
         """Check if the Spawning AI API is ready to be used. This is determined by whether or not the API key is set.
@@ -185,7 +218,7 @@ class SpawningAPI(BulkRule):
             results = await asyncio.gather(*tasks)
 
         # flatten
-        return [response_url["url"] for response_url in itertools.chain(*results) if not response_url["optOut"]]
+        return [response_url for response_url in itertools.chain(*results)]
 
     async def _submit_chunk_async(self, session, semaphore, urls):
         """Submit a chunk of URLs to the Spawning AI API asynchronously.

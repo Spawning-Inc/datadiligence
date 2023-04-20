@@ -31,3 +31,7 @@ class Evaluator:
             if rule.is_ready() and not rule.is_allowed(**kwargs):
                 return False
         return True
+
+    def filter_allowed(self, **kwargs):
+        """Filter a list of entries based on the rules in this evaluator."""
+        raise NotImplementedError

@@ -49,8 +49,11 @@ Add bulk pre-processing for URLs in your pipeline (requires Spawning API Key)::
 
    >>> import datadiligence as dd
    >>> urls = ["https://www.example.com/art-123456789.jpg", "https://www.example.com/art-987654321.jpg"]
+   >>> dd.filter_allowed(urls=urls)
+    ["https://www.example.com/art-123456789.jpg"]
    >>> dd.is_allowed(urls=urls)
-   ["https://www.example.com/art-123456789.jpg"]
+    [True, False]
+
 
 Check HTTP responses in post-processing::
 
