@@ -20,11 +20,9 @@
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
 
-
-===========
+=============
 datadiligence
-===========
-
+=============
 
     Respect generative AI opt-outs in your ML and training pipeline.
 
@@ -70,7 +68,7 @@ Check HTTP responses in post-processing::
    >>> if is_allowed:
    >>>     download_image(response.content)
 
-Full documentation is available `here <https://datadiligence.readthedocs.io/en/latest/>`_.
+Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/>`_.
 
 -------------------------
 Respected Opt-Out Methods
