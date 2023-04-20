@@ -5,20 +5,12 @@
 .. image:: https://img.shields.io/pypi/v/datadiligence.svg
   :alt: PyPI-Server
   :target: https://pypi.org/project/datadiligence
-.. image:: https://img.shields.io/pypi/pyversions/datadiligence?style=flat-square
-  :alt: PyPI - Python Version
-.. image:: https://img.shields.io/pypi/dm/datadiligence?style=flat-square
-  :target: https://pypistats.org/packages/tox
-  :alt: PyPI - Downloads
-.. image:: https://img.shields.io/pypi/l/datadiligence?style=flat-square
+.. image:: https://img.shields.io/pypi/l/datadiligence
   :target: https://opensource.org/licenses/MIT
   :alt: PyPI - License
 .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
    :alt: Twitter
    :target: https://twitter.com/spawning_
-.. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
-    :alt: Project generated with PyScaffold
-    :target: https://pyscaffold.org/
 
 =============
 datadiligence
@@ -68,7 +60,7 @@ Check HTTP responses in post-processing::
    >>> if is_allowed:
    >>>     download_image(response.content)
 
-Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/>`_.
+Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/quickstart.html>`_.
 
 -------------------------
 Respected Opt-Out Methods
