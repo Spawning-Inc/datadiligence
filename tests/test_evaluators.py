@@ -12,6 +12,7 @@ from samples.custom import CustomEvaluator, NotReadyRule, CustomRule2
 from werkzeug.serving import make_server
 from server.app import app
 import threading
+import datadiligence.exceptions
 
 
 class EvaluatorTests(TestCase):
@@ -40,7 +41,7 @@ class EvaluatorTests(TestCase):
         self.assertTrue(http_evaluator.is_allowed(response=response))
         self.assertTrue(http_evaluator.is_allowed(headers=response.headers))
 
-        http_evaluator_2 = HttpEvaluator(respect_robots=False, respect_spawning=False)
+        http_evaluator_2 = HttpEvaluator(respect_robots=False)
         self.assertEqual(len(http_evaluator_2.rules), 0)
 
     def test_custom_evaluator(self):
@@ -71,7 +72,7 @@ class EvaluatorTests(TestCase):
         bulk_evaluator.add_rule(spawning_api)
         self.assertEqual(len(bulk_evaluator.rules), 1)
 
-        urls = bulk_evaluator.get_allowed([
+        urls = bulk_evaluator.filter_allowed([
             "https://www.spawning.ai",
             "https://www.shutterstock.com",
             "https://open.ai",
@@ -81,7 +82,7 @@ class EvaluatorTests(TestCase):
         ])
         self.assertEqual(len(urls), 3)
 
-        urls = bulk_evaluator.is_allowed(urls=[
+        urls = bulk_evaluator.filter_allowed(urls=[
             "https://www.spawning.ai",
             "https://www.shutterstock.com",
             "https://open.ai",
@@ -98,8 +99,10 @@ class EvaluatorTests(TestCase):
         bulk_evaluator = PreprocessEvaluator()
         self.assertTrue(len(bulk_evaluator.rules) > 0)
 
-        self.assertEqual(bulk_evaluator.get_allowed([]), [])
-        self.assertEqual(bulk_evaluator.get_allowed(None), [])
+        self.assertEqual(bulk_evaluator.filter_allowed([]), [])
+        self.assertEqual(bulk_evaluator.filter_allowed(None), [])
+
+        self.assertEqual(bulk_evaluator.is_allowed(), [])
 
     def test_bulk_evaluator_ready_state(self):
         b = PreprocessEvaluator()
@@ -111,7 +114,7 @@ class EvaluatorTests(TestCase):
 
         b.add_rule(spawning_rule)
 
-        urls = b.get_allowed([
+        urls = b.filter_allowed([
             "https://www.spawning.ai",
             "https://www.shutterstock.com",
             "https://open.ai",
@@ -155,7 +158,7 @@ class EvaluatorTests(TestCase):
         dd.register_evaluator(evaluator, name="preprocess", overwrite=True)
 
         # urls defaults
-        urls = dd.is_allowed(urls=[
+        urls = dd.filter_allowed(urls=[
             "https://www.spawning.ai",
             "https://www.shutterstock.com",
             "https://open.ai",
@@ -165,6 +168,21 @@ class EvaluatorTests(TestCase):
         ])
         self.assertEqual(len(urls), 3)
 
+        bool_urls = dd.is_allowed(urls=[
+            "https://www.spawning.ai",
+            "https://www.shutterstock.com",
+            "https://open.ai",
+            "https://www.google.com",
+            "https://laion.ai",
+            "https://www.youtube.com",
+        ])
+        self.assertFalse(bool_urls[0])
+        self.assertTrue(bool_urls[1])
+        self.assertTrue(bool_urls[2])
+        self.assertFalse(bool_urls[3])
+        self.assertFalse(bool_urls[4])
+        self.assertTrue(bool_urls[5])
+
         # response and headers defaults
         response = requests.get("http://localhost:5001/noai")
         self.assertFalse(dd.is_allowed(response=response))
@@ -173,6 +191,16 @@ class EvaluatorTests(TestCase):
         response = requests.get("http://localhost:5001/ai")
         self.assertTrue(dd.is_allowed(response=response))
         self.assertTrue(dd.is_allowed(headers=response.headers))
+
+        urls = dd.filter_allowed(name="preprocess", urls=[
+            "https://www.spawning.ai",
+            "https://www.shutterstock.com",
+            "https://open.ai",
+            "https://www.google.com",
+            "https://laion.ai",
+            "https://www.youtube.com",
+        ])
+        self.assertEqual(len(urls), 3)
 
         # reload standard evaluators
         dd.load_defaults()

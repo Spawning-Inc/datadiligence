@@ -23,10 +23,10 @@ class Rule:
 
 class BulkRule(Rule):
     """
-    Base class for bulk rules. get_allowed and is_ready must be implemented.
+    Base class for bulk rules. filter_allowed and is_ready must be implemented.
     """
 
-    def get_allowed(self, **kwargs):
+    def filter_allowed(self, **kwargs):
         """Filter a list of entries based on the rules in this evaluator."""
         raise NotImplementedError
 

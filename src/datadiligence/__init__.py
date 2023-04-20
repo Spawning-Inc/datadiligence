@@ -23,4 +23,4 @@ finally:
 from .evaluators import HttpEvaluator, PostprocessEvaluator, PreprocessEvaluator, Evaluator
 
 # bootstrap methods
-from .bootstrap import load_defaults, register_evaluator, is_allowed, get_evaluator, deregister_evaluator, list_evaluators
+from .bootstrap import load_defaults, register_evaluator, is_allowed, filter_allowed, get_evaluator, deregister_evaluator, list_evaluators
