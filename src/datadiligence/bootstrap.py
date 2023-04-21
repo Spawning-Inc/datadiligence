@@ -12,8 +12,6 @@ def load_defaults(user_agent=None):
     """Load the default evaluators."""
     register_evaluator(PreprocessEvaluator(user_agent=user_agent), overwrite=True)
     register_evaluator(PostprocessEvaluator(user_agent=user_agent), overwrite=True)
-    register_evaluator(HttpEvaluator(user_agent=user_agent), overwrite=True)
-
 
 def list_evaluators():
     """List the evaluators."""
@@ -79,10 +77,8 @@ def is_allowed(name=None, **kwargs):
         # based on the kwargs
         if "urls" in kwargs:
             return bootstrap_dictionary["preprocess"].is_allowed(**kwargs)
-        elif "response" in kwargs or "headers" in kwargs:
+        elif "url" in kwargs or "response" in kwargs or "headers" in kwargs:
             return bootstrap_dictionary["postprocess"].is_allowed(**kwargs)
-        elif "url" in kwargs:
-            return bootstrap_dictionary["http"].is_allowed(**kwargs)
         else:
             raise DefaultEvaluatorNotFound(list(kwargs.keys()))
 

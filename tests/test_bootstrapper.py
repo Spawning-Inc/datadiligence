@@ -62,7 +62,7 @@ class BootstrapTests(TestCase):
         dd.load_defaults()
         self.assertTrue(isinstance(dd.get_evaluator("preprocess"), dd.PreprocessEvaluator))
         self.assertTrue(isinstance(dd.get_evaluator("postprocess"), dd.PostprocessEvaluator))
-        self.assertEqual(len(dd.list_evaluators()), 3)
+        self.assertEqual(len(dd.list_evaluators()), 2)
 
     def test_register_evaluator(self):
         custom_evaluator = dd.Evaluator()
