@@ -83,6 +83,23 @@ class BootstrapTests(TestCase):
         self.assertFalse(dd.is_allowed("custom2", sample="www.google.com"))
         self.assertTrue(dd.is_allowed("custom2", sample="www.example.com"))
 
+        dd.load_defaults()
+
+        request = urllib.request.Request("http://localhost:5001/noai", data=None)
+        with urllib.request.urlopen(request, timeout=3) as response:
+            self.assertFalse(dd.is_allowed(response=response))
+
+        # hack to reach local instance
+        dd.get_evaluator("preprocess").rules[0].SPAWNING_AI_API_URL = "http://localhost:5001/opts"
+        url_results = dd.is_allowed(urls=self.urls)
+        self.assertEqual(len(url_results), 6)
+
+        # with user agent arg
+        url_results = dd.is_allowed(urls=self.urls, user_agent="UserAgent")
+        self.assertEqual(len(url_results), 6)
+
+        dd.load_defaults()
+
     def test_filter_allowed(self):
 
         dd.load_defaults()
@@ -94,6 +111,13 @@ class BootstrapTests(TestCase):
         # hack to reach local instance
         dd.get_evaluator("preprocess").rules[0].SPAWNING_AI_API_URL = "http://localhost:5001/opts"
         filtered_urls = dd.filter_allowed(urls=self.urls)
+        self.assertEqual(len(filtered_urls), 3)
+        self.assertEqual(filtered_urls[0], self.urls[1])
+        self.assertEqual(filtered_urls[1], self.urls[2])
+        self.assertEqual(filtered_urls[2], self.urls[5])
+
+        # with user agent arg
+        filtered_urls = dd.filter_allowed(urls=self.urls, user_agent="UserAgent")
         self.assertEqual(len(filtered_urls), 3)
         self.assertEqual(filtered_urls[0], self.urls[1])
         self.assertEqual(filtered_urls[1], self.urls[2])

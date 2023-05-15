@@ -123,6 +123,17 @@ class SpawningAPITest(TestCase):
         self.assertFalse(results[4])
         self.assertTrue(results[5])
 
+    def test_with_useragent(self):
+        spawning_api = SpawningAPI()
+        spawning_api.SPAWNING_AI_API_URL = "http://localhost:5001/opts"
+
+        allowed = spawning_api.is_allowed(url=self.urls[1], user_agent="New User Agent")
+        self.assertTrue(allowed[1])
+
+        spawning_api.SPAWNING_AI_API_URL = "http://localhost:5001/opts"
+        allowed = spawning_api.is_allowed(url=self.urls[4], user_agent="New User Agent")
+        self.assertFalse(allowed[4])
+
     def test_api_exception_handling(self):
         spawning_api = SpawningAPI(user_agent="spawningbot")
         spawning_api.SPAWNING_AI_API_URL = "http://localhost:5001/fail"

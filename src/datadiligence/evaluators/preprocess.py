@@ -47,11 +47,11 @@ class PreprocessEvaluator(Evaluator):
             if len(allowed) == 0:
                 break
             if rule.is_ready():
-                allowed = rule.filter_allowed(urls=allowed)
+                allowed = rule.filter_allowed(urls=allowed, **kwargs)
 
         return allowed
 
-    def is_allowed(self, urls=None, *kwargs):
+    def is_allowed(self, urls=None, **kwargs):
         """
         Check if the urls are allowed.
 
@@ -69,7 +69,7 @@ class PreprocessEvaluator(Evaluator):
         allowed = [True] * len(urls)
         for rule in self.rules:
             if rule.is_ready():
-                rule_results = rule.is_allowed(urls=urls)
+                rule_results = rule.is_allowed(urls=urls, **kwargs)
 
                 # update allowed list to False only if rule_results is False
                 allowed = [a and b for a, b in zip(allowed, rule_results)]
