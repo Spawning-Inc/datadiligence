@@ -55,7 +55,7 @@ class XRobotsTagHeader(HttpRule):
         else:
             raise XRobotsTagNoParam()
 
-        return self._eval_header_value(header_value)
+        return self._eval_header_value(header_value, **kwargs)
 
     def is_ready(self):
         """
@@ -63,12 +63,13 @@ class XRobotsTagHeader(HttpRule):
         """
         return True
 
-    def _eval_header_value(self, header_value):
+    def _eval_header_value(self, header_value, user_agent=None, **kwargs):
         """
         Evaluate the header value to determine if the user agent is allowed to access the resource.
 
         Args:
             header_value (str): The header value.
+            user_agent (str): Override user agent to use when making requests to the Spawning AI API.
 
         Returns:
             bool: True if the user agent is allowed to access the resource, False otherwise.
@@ -76,19 +77,19 @@ class XRobotsTagHeader(HttpRule):
         if not header_value:
             return True
 
-        # check if blocking all user-agents
-        if header_value in self.disallowed_headers:
-            return False
-
         # if we have a specific user agent
-        if self.user_agent:
-            for value in header_value.split(","):
-                if value.strip() in self.disallowed_headers:
-                    return False
+        if not user_agent:
+            user_agent = self.user_agent
 
-                # check user-agent directives
+        # check if blocking all user agents
+        for value in header_value.split(","):
+            if value.strip() in self.disallowed_headers:
+                return False
+
+            # check if blocking specific user agent
+            if user_agent:
                 ua_values = value.split(":")
-                if len(ua_values) == 2 and ua_values[0].strip() == self.user_agent \
+                if len(ua_values) == 2 and ua_values[0].strip() == user_agent \
                         and ua_values[1].strip() in self.disallowed_headers:
                     return False
 
