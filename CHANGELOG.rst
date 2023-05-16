@@ -2,7 +2,12 @@
 Changelog
 =========
 
-Version 0.1.3
+Version 0.1.5
+=============
+
+- Added support for python 3.7.
+
+Version 0.1.4
 =============
 
 - Increasing formats supported by HTTP X-Robots-Tag header.
