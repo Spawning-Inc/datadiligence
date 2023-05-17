@@ -16,7 +16,7 @@
 datadiligence
 =============
 
-    Respect generative AI opt-outs in your ML and training pipeline.
+    Respect generative AI opt-outs in your ML training pipeline.
 
 ``datadiligence`` aims to make it simple for ML practitioners to respect opt-outs in their training by
 providing a consistent interface to check if a given work is opted-out using any known method. The goal of this
