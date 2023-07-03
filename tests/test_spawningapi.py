@@ -54,8 +54,19 @@ class SpawningAPITest(TestCase):
             "https://open.ai",
             "https://www.google.com",
             "https://laion.ai",
-            "https://www.youtube.com",
+            "https://spawning.ai/éxample.png"
         ]
+
+    def test_unicode(self):
+        unicode_urls = [
+            "https://spawning.ai/éxample.png",
+            "https://open.ai/image.png"
+        ]
+
+        spawning_api = SpawningAPI()
+        spawning_api.SPAWNING_AI_API_URL = "http://localhost:5001/unicode/success"
+        results = spawning_api.filter_allowed(urls=unicode_urls)
+        self.assertEqual(results, unicode_urls)
 
     def test_chunking(self):
         iter_num = 0
