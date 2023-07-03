@@ -66,3 +66,18 @@ def fail2():
     response.headers["Content-Type"] = "application/json"
     response.status_code = 200
     return response
+
+
+@app.route("/tdmrep", methods=["GET"])
+def tdmrep():
+    response = Response()
+    response.headers["tdm-reservation"] = "0"
+    return response
+
+
+@app.route("/blocktdmrep", methods=["GET"])
+def tdmrep_none():
+    response = Response()
+    response.headers["tdm-reservation"] = "1"
+    response.headers["tdm-policy"] = "http://localhost/test/policy.json"
+    return response

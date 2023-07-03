@@ -132,9 +132,9 @@ class TDMRepHeader(HttpRule):
             bool: True if resource allows access without a policy, False otherwise.
         """
 
-        print("HERE")
-        print(header_value)
         if not header_value:
             return True
 
-        return header_value.strip() == "1"
+        print("HERE")
+        print(header_value)
+        return header_value.strip() != "1"
