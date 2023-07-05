@@ -248,8 +248,8 @@ on PyPI_, the following steps can be used to release a new version for
 ``datadiligence``:
 
 #. Make sure all unit tests are successful.
-#. Tag the current commit on the main branch with a release tag, e.g., ``v1.2.3``.
-#. Push the new tag to the upstream repository_, e.g., ``git push upstream v1.2.3``
+#. Tag the current commit on the main branch with a release tag, e.g., ``git tag 0.1.7``.
+#. Push the new tag to the upstream repository_, e.g., ``git push origin 0.1.7``
 #. Clean up the ``dist`` and ``build`` folders with ``tox -e clean``
    (or ``rm -rf dist build``)
    to avoid confusion with old builds and Sphinx docs.
@@ -258,7 +258,10 @@ on PyPI_, the following steps can be used to release a new version for
    Also check the sizes of the distributions, if they are too big (e.g., >
    500KB), unwanted clutter may have been accidentally included.
 #. Run ``tox -e publish -- --repository pypi`` and check that everything was
-   uploaded to PyPI_ correctly.
+   uploaded to PyPI_ correctly. This will prompt you for pypi authentication. We
+   only use PyPi API Keys, so the user will be ``__token__`` and the password 
+   is value of the API key. Optionally, you can set the ``TWINE_PASSWORD`` 
+   environment variable to the value of the API key.
 
 
 

@@ -3,7 +3,7 @@ Changelog
 =========
 
 Version 0.1.6
-============
+=============
 
 - Added support for TDM Reservation Protocol HTTP headers (https://www.w3.org/2022/tdmrep/#sec-tdm-header). 
 
