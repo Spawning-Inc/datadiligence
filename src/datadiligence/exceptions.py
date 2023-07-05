@@ -12,25 +12,34 @@ class XRobotsTagNoParam(Exception):
         super().__init__("XRobotsTagHeader must be provided with either an url, response, or headers object.")
 
 
-class XRobotsTagUnknownHeaderObject(Exception):
+class TDMRepNoParam(Exception):
     """
-    Raised when XRobotsTagHeader is provided with an unknown header object.
+    Raised when TDMRepHeader isn't provided with either an url, response, or headers object.
+    """
+
+    def __init__(self):
+        super().__init__("TDMRepHeader must be provided with either an url, response, or headers object.")
+
+
+class HttpUnknownHeaderObject(Exception):
+    """
+    Raised when an HTTPRule is provided with an unknown header object.
     """
 
     def __init__(self):
         super().__init__(
-            "XRobotsTagHeader must be provided with a header object of types "
+            "HTTPRule must be provided with a header object of types "
             "dict|CaseInsensitiveDict|http.client.HTTPMessage.")
 
 
-class XRobotsTagUnknownResponseObject(Exception):
+class HttpUnknownResponseObject(Exception):
     """
-    Raised when XRobotsTagHeader is provided with an unknown response object.
+    Raised when HTTPRule is provided with an unknown response object.
     """
 
     def __init__(self):
         super().__init__(
-            "XRobotsTagHeader must be provided with a response object of types "
+            "HTTPRule must be provided with a response object of types "
             "http.client.HTTPResponse|requests.Response.")
 
 

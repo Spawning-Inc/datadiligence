@@ -33,7 +33,7 @@ class BootstrapTests(TestCase):
             "https://open.ai",
             "https://www.google.com",
             "https://laion.ai",
-            "https://www.youtube.com",
+            "https://spawning.ai/éxample.png"
         ]
 
     def test_exceptions(self):

@@ -2,10 +2,7 @@
 Rules to manage validation using HTTP properties
 """
 
-import http.client
-import requests
-from ..exceptions import XRobotsTagNoParam, XRobotsTagUnknownHeaderObject, XRobotsTagUnknownResponseObject
-from ..utils import get_url
+from ..exceptions import XRobotsTagNoParam, TDMRepNoParam
 from .base import HttpRule
 
 
@@ -46,22 +43,16 @@ class XRobotsTagHeader(HttpRule):
         """
 
         if headers:
-            header_value = self._handle_headers(headers)
+            header_value = self.get_header_value(headers, self.HEADER_NAME)
         elif response:
-            header_value = self._handle_response(response)
+            header_value = self.get_header_value_from_response(response, self.HEADER_NAME)
         elif url:
             response = self._handle_url(url)
-            header_value = self._handle_headers(response.headers)
+            header_value = self.get_header_value(response.headers, self.HEADER_NAME)
         else:
             raise XRobotsTagNoParam()
 
         return self._eval_header_value(header_value, **kwargs)
-
-    def is_ready(self):
-        """
-        This rule is always ready.
-        """
-        return True
 
     def _eval_header_value(self, header_value, user_agent=None, **kwargs):
         """
@@ -95,53 +86,55 @@ class XRobotsTagHeader(HttpRule):
 
         return True
 
-    def _handle_response(self, response):
-        """
-        Handle the response object to get the header value.
+
+class TDMRepHeader(HttpRule):
+    """
+    This class wraps logic to evaluate the TDM Reservation Protocol headers: https://www.w3.org/2022/tdmrep/.
+    """
+    HEADER_NAME = "tdm-reservation"
+
+    def __init__(self):
+        """Create a new TDMRepHeaders instance."""
+        super().__init__()
+
+    def is_allowed(self, url=None, response=None, headers=None, **kwargs):
+        """Check if the tdm-rep header allows access to the resource without a policy.
 
         Args:
-            response (http.client.HTTPResponse|requests.Response): The response object.
+            url: (str): The URL of the resource.
+            response (http.client.HTTPResponse|requests.Response, optional): The response object. Defaults to None
+            headers (dict|http.client.HTTPMessage, optional): The headers dictionary. Defaults to None.
 
         Returns:
-            str: The header value.
+            bool: True if access is allowed for the resource, False otherwise.
         """
-        if type(response) == http.client.HTTPResponse:
-            header_value = response.getheader(XRobotsTagHeader.HEADER_NAME, "")
-        elif type(response) == requests.Response:
-            header_value = response.headers.get(XRobotsTagHeader.HEADER_NAME, "")
+
+        if headers:
+            header_value = self.get_header_value(headers, self.HEADER_NAME)
+        elif response:
+            header_value = self.get_header_value_from_response(response, self.HEADER_NAME)
+        elif url:
+            response = self._handle_url(url)
+            header_value = self.get_header_value(response.headers, self.HEADER_NAME)
         else:
-            raise XRobotsTagUnknownResponseObject()
-        return header_value
+            raise TDMRepNoParam()
 
-    def _handle_headers(self, headers):
+        return self._eval_header_value(header_value, **kwargs)
+
+    def _eval_header_value(self, header_value, **kwargs):
         """
-        Handle the headers object to get the header value.
+        Evaluate the header value to determine if the resource permits anonymous access.
 
         Args:
-            headers (dict|http.client.HTTPMessage|CaseInsensitiveDict): The headers object.
+            header_value (str): The header value.
 
         Returns:
-            str: The header value.
+            bool: True if resource allows access without a policy, False otherwise.
         """
-        if type(headers) == dict or type(headers) == requests.structures.CaseInsensitiveDict:
-            header_value = headers.get(XRobotsTagHeader.HEADER_NAME, "")
-        elif type(headers) == list and len(headers) > 0 and type(headers[0]) == tuple:
-            header_value = dict(headers).get(XRobotsTagHeader.HEADER_NAME, "")
-        elif type(headers) == http.client.HTTPMessage:
-            header_value = headers.get(XRobotsTagHeader.HEADER_NAME, "")
-        else:
-            raise XRobotsTagUnknownHeaderObject()
 
-        return header_value
+        if not header_value:
+            return True
 
-    def _handle_url(self, url):
-        """
-        If given a raw URL, submit a request to get the image.
-
-        Args:
-            url (str): The URL of the resource.
-
-        Returns:
-            requests.Response: Response object.
-        """
-        return get_url(url, user_agent=self.user_agent)
+        print("HERE")
+        print(header_value)
+        return header_value.strip() != "1"

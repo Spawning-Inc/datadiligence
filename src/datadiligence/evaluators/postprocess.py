@@ -1,7 +1,7 @@
 """Postprocess evaluator module."""
 
 from .base import Evaluator
-from ..rules import XRobotsTagHeader
+from ..rules import XRobotsTagHeader, TDMRepHeader
 
 
 class PostprocessEvaluator(Evaluator):
@@ -13,6 +13,7 @@ class PostprocessEvaluator(Evaluator):
     def __init__(self, user_agent=None):
         super().__init__()
         self.add_rule(XRobotsTagHeader(user_agent))
+        self.add_rule(TDMRepHeader())
 
     def is_allowed(self, **kwargs):
         """Check if the headers are allowed based on the rules in this evaluator.

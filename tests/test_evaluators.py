@@ -41,7 +41,7 @@ class EvaluatorTests(TestCase):
         self.assertTrue(http_evaluator.is_allowed(response=response))
         self.assertTrue(http_evaluator.is_allowed(headers=response.headers))
 
-        http_evaluator_2 = HttpEvaluator(respect_robots=False)
+        http_evaluator_2 = HttpEvaluator(respect_robots=False, respect_tdmrep=False)
         self.assertEqual(len(http_evaluator_2.rules), 0)
 
     def test_custom_evaluator(self):

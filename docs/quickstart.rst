@@ -168,37 +168,28 @@ you have a User-agent, please provide it. If you don't know, it should be fine t
 Calling a specific Evaluator
 ----------------------------
 So far, we've been letting the package determine the best `Evaluator` to use based on the keyword arguments. If
-you want to call a specific Evaluator, you can do so by passing the ``name`` parameter::
+you want to call a specific Evaluator, you can initialize it and call it directly::
 
+    >>> fromm datadiligence import HttpEvaluator
+    >>> http_evaluator = HttpEvaluator()
     >>> url = 'https://www.google.com'
-    >>> dd.is_allowed("http", url=url)
+    >>> http_evaluator.is_allowed(url=url)
     True
-
-To see which Evaluators have been loaded to the package memory:
-
-    >>> dd.list_evaluators()
-    ['http', 'preprocess', 'postprocess']
 
 ----------------------
 Customizing Evaluators
 ----------------------
-Most Evaluators allow you to disable specific `Rules`. All `Rules` should be enabled by default,
+Some Evaluators allow you to disable specific `Rules`. All `Rules` should be enabled by default,
 but if you don't want to respect a rule for a given reason (e.g. you don't have a Spawning API Key), you can disable
 the rule by creating the Evaluator directly::
 
     >>> from datadiligence import HttpEvaluator
-    >>> http_evaluator = HttpEvaluator(respect_spawning=False)
+    >>> http_evaluator = HttpEvaluator(respect_tdmrep=False)
 
 This evaluator can be called the same as the default Evaluators::
 
     >>> url = 'https://www.google.com'
     >>> http_evaluator.is_allowed(url=url)
-    True
-
-You can also add it to the global evaluator list to use throughout your code::
-
-    >>> dd.register_evaluator(my_evaluator, name="my_evaluator")
-    >>> dd.is_allowed("my_evaluator", url=url)
     True
 
 This should normally be done when you're purposefully avoiding a default `Rule`, not due to lack of dependencies. Any

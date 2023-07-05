@@ -235,7 +235,7 @@ class SpawningAPI(BulkRule):
         # limit concurrent requests
         async with semaphore:
             # create body
-            body = "\n".join(urls)
+            body = "\n".join(urls).encode("utf-8")
 
             # make request
             async with session.post(self.SPAWNING_AI_API_URL, data=body) as response:
@@ -258,7 +258,7 @@ class SpawningAPI(BulkRule):
         """
 
         # create body
-        body = "\n".join(urls)
+        body = "\n".join(urls).encode("utf-8")
 
         # make request
         try:
