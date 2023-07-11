@@ -61,7 +61,7 @@ Check HTTP responses in post-processing::
    >>> is_allowed = dd.is_allowed(response=response)
    True
    >>> if is_allowed:
-   >>>     download_image(response.content)
+   >>>     process_image(response.content)
 
 Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/quickstart.html>`_.
 
