@@ -63,12 +63,12 @@ Check HTTP responses in post-processing::
    >>> if is_allowed:
    >>>     process_image(response.content)
 
-Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/quickstart.html>`_.
-
 Check a local file::
 
    >>> dd.is_allowed(path="path/to/file.jpg")
    False
+
+Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/quickstart.html>`_.
 
 -------------------------
 Respected Opt-Out Methods
