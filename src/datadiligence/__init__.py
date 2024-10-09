@@ -20,7 +20,7 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .evaluators import HttpEvaluator, PostprocessEvaluator, PreprocessEvaluator, Evaluator
+from .evaluators import HttpEvaluator, PostprocessEvaluator, PreprocessEvaluator, FileEvaluator, Evaluator
 
 # bootstrap methods
 from .bootstrap import load_defaults, register_evaluator, is_allowed, filter_allowed, get_evaluator, deregister_evaluator, list_evaluators

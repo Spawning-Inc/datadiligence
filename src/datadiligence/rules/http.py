@@ -135,6 +135,4 @@ class TDMRepHeader(HttpRule):
         if not header_value:
             return True
 
-        print("HERE")
-        print(header_value)
         return header_value.strip() != "1"

@@ -1,12 +1,12 @@
 """Postprocess evaluator module."""
 
 from .base import Evaluator
-from ..rules import XRobotsTagHeader, TDMRepHeader
+from ..rules import XRobotsTagHeader, TDMRepHeader, C2PAMetadataRule
 
 
 class PostprocessEvaluator(Evaluator):
     """
-    Postprocess Evaluator class. Loads XRobotsTagHeader rule by default.
+    Postprocess Evaluator class. Loads XRobotsTagHeader, TDMRepHeader, and C2PAMetadata rules by default.
     """
     name = "postprocess"
 
@@ -14,11 +14,13 @@ class PostprocessEvaluator(Evaluator):
         super().__init__()
         self.add_rule(XRobotsTagHeader(user_agent))
         self.add_rule(TDMRepHeader())
+        self.add_rule(C2PAMetadataRule())
 
     def is_allowed(self, **kwargs):
         """Check if the headers are allowed based on the rules in this evaluator.
 
         Args:
+            **url (str): The URL of the request.
             **response (http.client.HTTPResponse|requests.Response): The response object.
             **headers (dict|http.client.HTTPMessage): The headers dictionary.
 

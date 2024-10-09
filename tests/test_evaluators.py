@@ -205,6 +205,10 @@ class EvaluatorTests(TestCase):
         # reload standard evaluators
         dd.load_defaults()
 
+    def test_file_evaluator(self):
+        evaluator = dd.get_evaluator("file")
+        self.assertFalse(evaluator.is_allowed(path="tests/resources/sample_c2pa.png"))
+
     @classmethod
     def tearDownClass(cls):
         cls.server.shutdown()

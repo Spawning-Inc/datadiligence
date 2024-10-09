@@ -65,6 +65,11 @@ Check HTTP responses in post-processing::
 
 Full documentation is available on `readthedocs <https://datadiligence.readthedocs.io/en/latest/quickstart.html>`_.
 
+Check a local file::
+
+   >>> dd.is_allowed(path="path/to/file.jpg")
+   False
+
 -------------------------
 Respected Opt-Out Methods
 -------------------------
@@ -73,9 +78,6 @@ This project currently supports the following opt-out methods:
 
 * The Spawning API. See https://spawning.ai/api for more information.
 * The DeviantArt X-Robots-Tag HTTP Headers. See https://www.deviantart.com/team/journal/UPDATE-All-Deviations-Are-Opted-Out-of-AI-Datasets-934500371 for more information.
-
-With these opt-out methods coming soon:
-
 * C2PA/CAI metadata. See https://c2pa.org/ for more information.
 
 ------------

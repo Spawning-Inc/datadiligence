@@ -126,9 +126,9 @@ Sometimes, checking the image at a single URL may be all you need::
 This evaluator currently uses the Spawning API Rule, and the X-Robots-Tag Rule. If you're checking many URLs, it's
 probably best to use the Bulk rules instead.
 
----------------------
-Check a File/Response
----------------------
+------------------------------
+Check a File/Response at a URL
+------------------------------
 If you're downloading many files from URLs, it doesn't make sense to download a URL a second time to evaluate the response. In this case, you can use the HTTP response::
 
     >>> import requests
@@ -147,6 +147,15 @@ Or you can use the HTTP headers::
 
 The ``response`` and ``headers`` parameters accept a number of basic types, including response objects from `requests` and `urllib`,
 so you should feel comfortable passing in the response object from your favorite HTTP library.
+
+------------------
+Check a Local File
+------------------
+If you have a file available locally, you can pass the file path to the package::
+
+    >>> file_path = "path/to/image.png"
+    >>> dd.is_allowed(path=file_path)
+    True
 
 -----------------------------
 Check against your User-Agent

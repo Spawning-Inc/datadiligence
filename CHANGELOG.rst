@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 0.1.7
+=============
+
+- Added support for C2PA file metadata assertions (https://opensource.contentauthenticity.org/docs/manifest/assertions-actions#do-not-train-assertion).
+
+
 Version 0.1.6
 =============
 

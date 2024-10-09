@@ -62,7 +62,8 @@ class BootstrapTests(TestCase):
         dd.load_defaults()
         self.assertTrue(isinstance(dd.get_evaluator("preprocess"), dd.PreprocessEvaluator))
         self.assertTrue(isinstance(dd.get_evaluator("postprocess"), dd.PostprocessEvaluator))
-        self.assertEqual(len(dd.list_evaluators()), 2)
+        self.assertTrue(isinstance(dd.get_evaluator("file"), dd.FileEvaluator))
+        self.assertEqual(len(dd.list_evaluators()), 3)
 
     def test_register_evaluator(self):
         custom_evaluator = dd.Evaluator()
@@ -97,6 +98,9 @@ class BootstrapTests(TestCase):
         # with user agent arg
         url_results = dd.is_allowed(urls=self.urls, user_agent="UserAgent")
         self.assertEqual(len(url_results), 6)
+
+        # double check C2PA is in default evaluators
+        self.assertFalse(dd.is_allowed(path="tests/resources/sample_c2pa.png"))
 
         dd.load_defaults()
 

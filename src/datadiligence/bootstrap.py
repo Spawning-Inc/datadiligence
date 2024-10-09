@@ -3,7 +3,7 @@ functions to preload default evaluators and make accessible globally
 """
 
 from .exceptions import EvaluatorAlreadyRegistered, EvaluatorNotRegistered, NotEvaluator, DefaultEvaluatorNotFound
-from .evaluators import Evaluator, PreprocessEvaluator, PostprocessEvaluator
+from .evaluators import Evaluator, PreprocessEvaluator, PostprocessEvaluator, FileEvaluator
 
 bootstrap_dictionary = {}
 
@@ -12,6 +12,7 @@ def load_defaults(user_agent=None):
     """Load the default evaluators."""
     register_evaluator(PreprocessEvaluator(user_agent=user_agent), overwrite=True)
     register_evaluator(PostprocessEvaluator(user_agent=user_agent), overwrite=True)
+    register_evaluator(FileEvaluator(), overwrite=True)
 
 
 def list_evaluators():
@@ -80,6 +81,8 @@ def is_allowed(name=None, **kwargs):
             return bootstrap_dictionary["preprocess"].is_allowed(**kwargs)
         elif "url" in kwargs or "response" in kwargs or "headers" in kwargs:
             return bootstrap_dictionary["postprocess"].is_allowed(**kwargs)
+        elif "path" in kwargs:
+            return bootstrap_dictionary["file"].is_allowed(**kwargs)
         else:
             raise DefaultEvaluatorNotFound(list(kwargs.keys()))
 
